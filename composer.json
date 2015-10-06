@@ -8,5 +8,10 @@
     ],
     "require": {
     	"phpfastcgi/fastcgi-daemon": "~0.6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Swoole\\Fastcgi\\": "src/"
+        }
     }
 }

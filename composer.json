@@ -1,0 +1,12 @@
+{
+    "name": "out001a/swoole-fastcgi",
+    "authors": [
+        {
+            "name": "shanhuanming",
+            "email": "545827465@qq.com"
+        }
+    ],
+    "require": {
+    	"phpfastcgi/fastcgi-daemon": "~0.6.2"
+    }
+}

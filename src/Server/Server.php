@@ -29,19 +29,42 @@ class Server extends \swoole_server {
         
         // A simple kernel. This is the core of your application
         $kernel = function (RequestInterface $request) {
-            $server_request = $request->getServerRequest();
-            $_GET     = $server_request->getQueryParams();
-            $_POST    = $server_request->getParsedBody();
-            $_REQUEST = array_merge($_GET, $_POST);
-            $_SERVER  = $server_request->getServerParams();
-            $_COOKIE  = $server_request->getCookieParams();
-            $_FILES   = $server_request->getUploadedFiles();
             // $request->getServerRequest()         returns PSR-7 server request object
             // $request->getHttpFoundationRequest() returns HTTP foundation request object
-            return new HtmlResponse('<h1>Hello, World!</h1>');
+            
+            // TODO 检查确认POST、COOKIE、FILES等变量的正确性
+            $serverRequest = $request->getServerRequest();
+            $_GET     = $serverRequest->getQueryParams();
+            $_POST    = $serverRequest->getParsedBody();
+            $_REQUEST = array_merge($_GET, $_POST);
+            $_SERVER  = $serverRequest->getServerParams();
+            $_COOKIE  = $serverRequest->getCookieParams();
+            $_FILES   = $serverRequest->getUploadedFiles();
+            
+            if (!@is_dir($_SERVER['DOCUMENT_ROOT'])) {
+                // TODO stderr, root not found
+                return; // TODO 返回一个status非200的Response，表示有问题，并在message中给出问题原因
+            }
+            
+            $doc_root = $_SERVER['DOCUMENT_ROOT'];
+            $doc_file = $doc_root . $_SERVER['SCRIPT_FILENAME'];
+            if (!file_exists($doc_file)) {
+                // TODO stderr, file not found
+                return; // TODO 返回一个status非200的Response，表示有问题，并在message中给出问题原因
+            }
+            
+            ob_start();
+            chdir($doc_root);
+            require $doc_file;
+            $str = ob_get_contents();
+            ob_end_clean();
+            
+            // return new HtmlResponse('<h1>Hello, World!</h1>');
+            return new HtmlResponse($str);
         };
         
         (new ConnectionHandler(new CallbackWrapper($kernel), new WorkerConnection($data, $serv, $fd)))->ready();
+        
         var_dump(4);
         $serv->close($fd);
         

@@ -22,7 +22,7 @@ class Server extends \swoole_server {
     
     public function onWorkerStart($serv, $worker_id) {
         echo "worker {$worker_id} starts ...\n";
-        // TODO 怎样才能把sapi_name从cli改成cgi？
+        // TODO 怎样才能把sapi_name从cli改成cgi？可否在swoole_server的配置选项中加一个sapi_name的配置？
         var_dump(php_sapi_name());
     }
     

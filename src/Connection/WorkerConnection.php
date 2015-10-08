@@ -23,7 +23,7 @@ class WorkerConnection implements ConnectionInterface {
     
     public function write($buffer) {
         var_dump(3);
-        $this->_server->send($this->_fd, $buffer);
+        $this->_server->sendwait($this->_fd, $buffer);
     }
     
     public function isClosed() {

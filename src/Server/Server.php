@@ -11,7 +11,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 
 class Server extends \swoole_server {
     public function __construct($host, $port) {
-        parent::__construct($host, $port, SWOOLE_PROCESS, SWOOLE_SOCK_TCP);
+        parent::__construct($host, $port, SWOOLE_BASE, SWOOLE_SOCK_TCP);
     }
     
     public function start() {
@@ -22,6 +22,8 @@ class Server extends \swoole_server {
     
     public function onWorkerStart($serv, $worker_id) {
         echo "worker {$worker_id} starts ...\n";
+        // TODO 怎样才能把sapi_name从cli改成cgi？
+        var_dump(php_sapi_name());
     }
     
     public function onReceive($serv, $fd, $from_id, $data) {

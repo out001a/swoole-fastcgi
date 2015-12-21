@@ -1,2 +1,4 @@
 /vendor/
 /composer.lock
+server.php.old
+command.php

@@ -11,6 +11,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 
 class Server extends \swoole_server {
     public function __construct($host, $port) {
+        // TODO 还可以使用 SWOOLE_UNIX_STREAM
         parent::__construct($host, $port, SWOOLE_BASE, SWOOLE_SOCK_TCP);
     }
     
@@ -26,8 +27,10 @@ class Server extends \swoole_server {
         var_dump(php_sapi_name());
     }
     
+    // TODO 一次receive不一定能获取完所有的请求数据，需要人工拼接，可以根据请求头中的CONTENT_LENGTH判断是否拼接完整
     public function onReceive($serv, $fd, $from_id, $data) {
         var_dump("fd: {$fd}");
+        // file_put_contents('./data.tmp', $data);
         
         // A simple kernel. This is the core of your application
         $kernel = function (RequestInterface $request) {
@@ -68,9 +71,10 @@ class Server extends \swoole_server {
         (new ConnectionHandler(new CallbackWrapper($kernel), new WorkerConnection($data, $serv, $fd)))->ready();
         
         var_dump(4);
+        // TODO keepalive，而不关闭
         $serv->close($fd);
         
-        var_dump($_GET);
+        var_dump($_FILES);
         
         return;
     }
